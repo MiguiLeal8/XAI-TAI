@@ -14,17 +14,9 @@
 	
 	\section{Introduction}
 	This document contains the answers to the exercises from Laboratory 1 and Laboratory 2
-	of the Explainable Artificial Intelligence (XTAI) course, Spring 2026.
+	of the Explainable and Trustworthy Artificial Intelligence (TXAI) course, 2026.
 	For each laboratory notebook, a short summary of the activities performed is first provided,
 	then the list of exercises and the realted answers follows.
-	
-	
-	\subsection{Note on the formulation of the questions}
-	
-	Some of the original exercise questions have been slightly rephrased in this document
-	to adapt them to the present written format and to ensure clarity outside the original
-	notebook context. The meaning and intent of the questions, however, remain unchanged
-	with respect to the original laboratory notebooks.
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Notebook I1 -- Introduction to SHAP}
@@ -143,9 +135,9 @@
 	separate the classes effectively, retaining the remaining variables would only increase
 	model complexity without significantly improving predictive performance. Therefore, the
 	simplification step is justified as it reduces redundancy while preserving classification
-	quality.}
+	quality.}\newline
 	
-	\textbf{Consider the data distributions you see on the histograms for Petal Length and Petal Width. Then, consider the fuzzy partitions shown for those two variables. What do you think the system did to simplify the partitions for Length? Do you think that whatever it is, it is justified in light of the underlying data distribution?}\newline
+	\textbf{Consider the data distributions you see on the histograms for Petal Length and Petal Width. Then, consider the fuzzy partitions shown for those two variables. What do you think the system did to simplify the partitions for Length? Do you think that whatever it is, it is justified in light of the underlying data distribution?}
 	
 	\textcolor{blue}{The system simplified the fuzzy partitions for Petal Length by reducing the number of distinct fuzzy sets and merging regions where different classes exhibit similar values. This happens because Petal Length shows overlapping distributions for two of the target classes, which makes it difficult to justify highly granular partitions. As observed in the pair plots involving Petal Length, classes 2 and 3 form a single, dense cluster, while class 1 is clearly separated. As a result, the system creates a broader fuzzy region that captures the overlapping values of classes 2 and 3, corresponding to an “average” or “medium” linguistic term, while assigning a separate fuzzy set (such as “high”) to class 1.		
 	This simplification is justified by the underlying data distribution, as introducing more detailed partitions for Petal Length would not meaningfully improve class separation and would instead add unnecessary complexity. By aligning the fuzzy partitions with the natural clustering of the data, the system achieves a good balance between accuracy and interpretability.}	
@@ -160,9 +152,9 @@
 	When comparing the two alternative systems with the baseline system (RP\_FDTP\_S), several differences can be observed, mainly related to feature selection and fuzzy partitioning.
 	The system RP\_FDTP uses all the original features of the IRIS dataset, each one divided into three regular fuzzy partitions (low, average, and high). This is because no simplification is applied, neither at the feature level nor at the partition level. As a consequence, the rule base is larger and more complex, even though some of the rules are effectively redundant. In fact, we can observe that rules 3, 4, and 5 in RP\_FDTP correspond closely to rules 2, 3, and 4 in the baseline system, indicating that the additional variables do not provide new discriminative information but rather replicate patterns already captured by the most informative features.
 	The system SP\_FDTP\_S, on the other hand, applies simplification while using induced (data-driven) partitions. As a result, it retains the same relevant attributes as the baseline system, namely Petal Width and Petal Length, confirming their importance for classification. However, the fuzzy partitions differ: while the baseline system uses three partitions for both variables, SP\_FDTP\_S uses two partitions for one feature and three for the other. Additionally, the three-partition variable is no longer symmetrically divided, reflecting the actual data distribution more closely. This asymmetry suggests that the system adapts the fuzzy sets to the natural clustering present in the data rather than enforcing uniform linguistic terms.Overall, these differences arise from how each system balances interpretability, complexity, and fidelity to the underlying data distribution.
-	}
+	}\newline
 	
-	\textbf{If you had to choose only one alternative, without further information, which would you choose? Why?}\newline	
+	\textbf{If you had to choose only one alternative, without further information, which would you choose? Why?}	
 	
 	\textcolor{blue}{
 	Without further information, the system SP\_FDTP\_S would be the preferred choice. This system combines pruning and simplification with induced fuzzy partitions, allowing it to adapt the fuzzy sets to the actual data distribution rather than relying on uniform, predefined partitions. As a result, it captures the underlying structure of the data more accurately while still maintaining a compact and interpretable rule base.
@@ -186,7 +178,7 @@
 	In contrast, the SP\_FDTP\_S system, which uses induced partitions and simplification, produces a noticeably different explanation. Only two rules fire, both of which directly support class 3. The decision is driven by broader and asymmetric fuzzy sets that better align with the data distribution, leading to higher firing strengths and a more compact rule base. Although the final prediction is the same, the reasoning process is simpler and more decisive, with no competing rules supporting alternative classes.
 	}\newline
 	
-	\textbf{Which of the two modifications created a higher deviation from the baseline?}\newline
+	\textbf{Which of the two modifications created a higher deviation from the baseline?}
 	
 	\textcolor{blue}{Systems using induced partitions tend to deviate more from the baseline because they adapt
 	fuzzy sets to the empirical distribution of the data. This flexibility can improve
@@ -199,10 +191,9 @@
 	\textbf{Why do you think the FIS may be placing above the DT in the tradeoff?}\newline
 	\textcolor{blue}{
 	The Fuzzy Inference Systems place above the Decision Trees in the interpretability-accuracy tradeoff because they achieve comparable or even higher accuracy with a significantly lower structural complexity. While Decision Trees rely on many hard splits and leaves to model the decision boundaries, FISs use a small number of fuzzy rules that can cover broader regions of the feature space thanks to fuzzy memberships. This allows them to represent complex decision logic with fewer rules.
-	In addition, fuzzy rules are closer to natural language (like saying “Petal Width is high”), which improves semantic interpretability compared to the numerical thresholds used in Decision Trees. As a result, FISs can maintain high accuracy while remaining compact and easier to understand, which explains why they appear in a better position on the Pareto Front.
-    }
+	In addition, fuzzy rules are closer to natural language (like saying “Petal Width is high”), which improves semantic interpretability compared to the numerical thresholds used in Decision Trees. As a result, FISs can maintain high accuracy while remaining compact and easier to understand, which explains why they appear in a better position on the Pareto Front.}\newline
 	
-	\textbf{Induced Partitions seems to be slightly better than Regular Partitions, at least in light of the results shown. Can you imagine a situation in which, with this same Pareto Front, the Regular Partitions alternative would be preferred? Why?}\newline
+	\textbf{Induced Partitions seems to be slightly better than Regular Partitions, at least in light of the results shown. Can you imagine a situation in which, with this same Pareto Front, the Regular Partitions alternative would be preferred? Why?}
 	
 	\textcolor{blue}{Yes, there are situations in which the Regular Partitions alternative would still be preferred, even if induced partitions show slightly better accuracy on the Pareto Front. Regular partitions produce symmetric and uniformly distributed fuzzy sets, which are often easier to interpret and communicate, especially to non-expert users. When interpretability, transparency, and ease of explanation are more important than marginal gains in accuracy, regular partitions may be favored.
 	Moreover, regular partitions are less dependent on the specific data distribution and may generalize better when the dataset is small, noisy, or subject to change. In scenarios where robustness and stability are prioritized over fine-grained adaptation to the training data, regular partitions can reduce the risk of overfitting introduced by induced, data-driven partitions. Therefore, despite slightly lower performance, regular partitions may be preferred in applications where simplicity, consistency, and trustworthiness are critical.}
@@ -212,9 +203,11 @@
 	
 	 \textbf{Would you prefer this alternative to the SHAP/Visual approaches we used on the previous practical? Why?}\newline
 	
-	\textcolor{blue}{A new FIS was generated using the GUAJE tool and applied to the PIMA dataset. The resulting
-	system produced interpretable rules linking clinical variables with diabetes outcomes,
-	demonstrating how fuzzy modeling can generate both predictions and natural language
-	explanations.}
+	\textcolor{blue}{The fuzzy inference system produces explanations that are expressed in a language similar to human language, making them easy to understand and interpret.}
+
+    \textcolor{blue}{However, this approach show its limitations when the behaviour of complex  machine learning models needs to be explained and interpreted.
+    SHAP explainations are less intuitive and more difficult to undeerstand but they are more flexible and generally provides a more accurate estimations of the feature contributions.}
+    
+    \textcolor{blue}{Finally, we would prefer fuzzy systems when interpretability is our main objective, while SHAP approaches would be preferred for explaining complex machine learning models.}
 	
 \end{document}

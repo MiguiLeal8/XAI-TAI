@@ -1,0 +1,120 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\geometry{margin=1in}
+\onehalfspacing
+
+\title{Literature Review: Deep Learning for Ventilator Pressure Time-Series Modeling}
+\author{}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\chapter*{Literature Review}
+	
+	\section*{Long Short-Term Memory Networks}
+	
+	Recurrent Neural Networks (RNNs) suffer from vanishing and exploding gradients when modeling long temporal dependencies. To address this limitation, Hochreiter and Schmidhuber (1997) introduced the Long Short-Term Memory (LSTM) architecture.
+	
+	The LSTM cell is defined as:
+	
+	\begin{align}
+		f_t &= \sigma(W_f x_t + U_f h_{t-1} + b_f) \\
+		i_t &= \sigma(W_i x_t + U_i h_{t-1} + b_i) \\
+		\tilde{c}_t &= \tanh(W_c x_t + U_c h_{t-1} + b_c) \\
+		c_t &= f_t \odot c_{t-1} + i_t \odot \tilde{c}_t \\
+		o_t &= \sigma(W_o x_t + U_o h_{t-1} + b_o) \\
+		h_t &= o_t \odot \tanh(c_t)
+	\end{align}
+	
+	The additive update of the memory cell enables stable gradient flow across long sequences.
+	
+	In ventilator pressure modeling, each breath consists of 80 timesteps, where pressure depends on airflow, resistance, and compliance. LSTMs are therefore well-suited for capturing nonlinear temporal dependencies in respiratory dynamics.
+	
+	\section*{Sequence-to-Sequence Learning}
+	
+	Sutskever et al. (2014) introduced the sequence-to-sequence (Seq2Seq) framework using stacked LSTMs.
+	
+	The conditional probability is factorized as:
+	
+	\[
+	P(Y|X) = \prod_{t=1}^{T'} P(y_t \mid y_{<t}, c)
+	\]
+	
+	This formulation supports joint prediction of an entire sequence.
+	
+	In the ventilator setting:
+	
+	\[
+	\{x_t\}_{t=1}^{80} \rightarrow \{p_t\}_{t=1}^{80}
+	\]
+	
+	This motivates training the model to predict full pressure trajectories rather than independent timesteps.
+	
+	\section*{Deep Learning for Time Series}
+	
+	Fawaz et al. (2019) provide a comprehensive review of deep learning methods for time series. They demonstrate the effectiveness of deep architectures in modeling nonlinear multivariate signals.
+	
+	Key advantages include:
+	
+	\begin{itemize}
+		\item End-to-end representation learning
+		\item Nonlinear temporal modeling
+		\item Scalability to high-dimensional inputs
+	\end{itemize}
+	
+	Ventilator signals exhibit nonlinear airflow-pressure coupling, making LSTM-based approaches appropriate.
+	
+	\section*{Model Interpretability with SHAP}
+	
+	Lundberg and Lee (2017) introduced SHAP, a game-theoretic method for feature attribution.
+	
+	The Shapley value for feature $i$ is:
+	
+	\[
+	\phi_i =
+	\sum_{S \subseteq F \setminus \{i\}}
+	\frac{|S|!(|F|-|S|-1)!}{|F|!}
+	\left[
+	f(S \cup \{i\}) - f(S)
+	\right]
+	\]
+	
+	SHAP guarantees local accuracy and consistency.
+	
+	In ventilator modeling, SHAP enables timestep-level analysis and identification of instability drivers in high-error sequences.
+	
+	\chapter*{Bibliography}
+	
+	\begin{thebibliography}{9}
+		
+		\bibitem{hochreiter1997lstm}
+		Hochreiter, S., \& Schmidhuber, J. (1997).
+		Long Short-Term Memory.
+		\textit{Neural Computation}, 9(8), 1735–1780.
+		
+		\bibitem{sutskever2014seq2seq}
+		Sutskever, I., Vinyals, O., \& Le, Q. V. (2014).
+		Sequence to Sequence Learning with Neural Networks.
+		\textit{Advances in Neural Information Processing Systems}.
+		
+		\bibitem{fawaz2019dlts}
+		Fawaz, H. I., Forestier, G., Weber, J., Idoumghar, L., \& Muller, P.-A. (2019).
+		Deep Learning for Time Series Classification: A Review.
+		\textit{Data Mining and Knowledge Discovery}.
+		
+		\bibitem{lundberg2017shap}
+		Lundberg, S. M., \& Lee, S.-I. (2017).
+		A Unified Approach to Interpreting Model Predictions.
+		\textit{Advances in Neural Information Processing Systems}.
+		
+	\end{thebibliography}
+	
+\end{document}
